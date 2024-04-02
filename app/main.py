@@ -1,29 +1,12 @@
-from fastapi import FastAPI, UploadFile, File, Form
-from fastapi.responses import JSONResponse
-import os
-import shutil
-from rag_engine.rag_chain import rag_chain
-from dotenv import load_dotenv
+from fastapi import FastAPI
+from app.routers import single_pdf_rag, multi_pdf_compare
 
-# Load environment variables from .env file
-load_dotenv()
-app = FastAPI()
+app = FastAPI(
+    title="AI Learning Assistant",
+    description="Collection of ML/GenAI small useful apps",
+    version="0.1"
+)
 
-UPLOAD_FOLDER = "uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-@app.post("/rag_query")
-async def rag_query(file: UploadFile = File(...), query: str = Form(...)):
-    temp_file_path = os.path.join(UPLOAD_FOLDER, file.filename)
-    with open(temp_file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    db_path = os.path.join(UPLOAD_FOLDER, "chroma_db_pdf")
-
-    result = rag_chain.invoke({
-        "pdf_path": temp_file_path,
-        "query": query,
-        "db_path": db_path
-    })
-
-    return JSONResponse(content={"query": query, "answer": result})
+# Routers
+app.include_router(single_pdf_rag.router, prefix="/pdf-rag", tags=["Single PDF RAG"])
+app.include_router(multi_pdf_compare.router, prefix="/multi-pdf-compare", tags=["Multi PDF Comparison"])
