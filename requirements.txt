@@ -9,3 +9,6 @@ pypdf
 openai
 python-dotenv
 youtube-transcript-api
+crewai
+crewai-tools 
+duckduckgo-search
