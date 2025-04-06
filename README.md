@@ -59,7 +59,7 @@ uploads/
 
 4. **Run the FastAPI app**:
    ```bash
-   uvicorn app.main:app --reload
+   uvicorn app.main:app --reload --loop asyncio
    ```
 
 5. **Open the app**:
